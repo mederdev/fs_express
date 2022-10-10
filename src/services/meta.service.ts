@@ -12,7 +12,6 @@ export async function setNewValue(file: any) {
 		const res = await db.query(`update meta_data set filename='${file.filename}',mimetype='${file.mimetype}',size='${file.size}' where id='${id}'`);
 		return res.command == "UPDATE" ? "Item has been updated" : "Error";
 	}
-	// return res.command == "INSERT" ? "New value has been created" : "Error";
 }
 
 export async function getMeta() {

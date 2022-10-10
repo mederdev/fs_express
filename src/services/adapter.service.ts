@@ -1,22 +1,23 @@
-import { readFileFromLocal, saveFileToLocal } from './storage.service';
+import { checkSize, readFileFromLocal, saveFileToLocal } from './storage.service';
 const fs = require('fs');
 const path = require('path');
 
 export const localPath = path.join('/home/mederdev/StudioProjects/FileSystem/fs_express', 'uploads',);
 
-export async function readFile(filename: string, res: any) {
+export async function readFile(filename: string, res: any): Promise<void> {
 	const filePath = path.join(localPath, filename)
-
 	await readFileFromLocal(filePath, res);
-
 }
 
 export async function setFile(filename: string, buff: any) {
 	const filePath = path.join(localPath, filename)
-
-	const res = await saveFileToLocal(filename, filePath, buff.data)
-
-	return res == true ? "Write is end" : "Error";
+	const folderSize = await checkSize(localPath);
+	if (folderSize) {
+		const res = await saveFileToLocal(filename, filePath, buff.data)
+		return res == true ? "Write is end" : "Error";
+	} else {
+		return "Maximum size 10mb"
+	}
 }
 
 export async function downloadFile(filename: string, buff: any) {
@@ -30,19 +31,3 @@ export async function downloadFile(filename: string, buff: any) {
 		return error;
 	}
 }
-
-// export async function downloadFile(filename: string) {
-// 	console.log("asdasd");
-// 	const filePath = path.join(localPath, filename)
-// 	fs.readFile(filePath, function (error: any, data: any) {
-// 		if (error) {
-// 			return {
-// 				"statusCode": 404,
-// 			}
-// 		}
-// 		else {
-// 			return data;
-// 		}
-// 	});
-// }
-

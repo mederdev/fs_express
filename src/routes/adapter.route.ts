@@ -1,14 +1,17 @@
 const adapterRouter = require('express').Router();
-import bodyParser from 'body-parser';
-import { downloadFile } from '../services/adapter.service';
-import { getFileData, generateBuffer, uploadFile, getMetaData } from '../controllers/adapter.controller';
+import { updateFile, getFileData, generateBuffer, uploadFile, getMetaData } from '../controllers/adapter.controller';
 
-
+//Чтение файла,
+//Скачивание файла с сервера
 adapterRouter.get('/read/:filename', getFileData);
 
-// bodyParser.raw({ type: ["image/jpeg", "image/png"], limit: "5mb" })
-adapterRouter.post('/upload/:filename', generateBuffer);
+//Загрузка файла в сервер
+adapterRouter.post('/upload/:filename', generateBuffer, uploadFile);
 
+//Изменение файла
+adapterRouter.put('/write/:filename', generateBuffer, updateFile)
+
+//Получение мета_таблицы
 adapterRouter.get('/meta_data', getMetaData);
 
 export { adapterRouter };

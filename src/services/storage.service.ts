@@ -1,5 +1,6 @@
 const fs = require('fs');
-import { Request } from 'express';
+const { promisify } = require('util')
+const fastFolderSize = require('fast-folder-size')
 
 export async function readFileFromLocal(uploadFile: any, res: any) {
 	try {
@@ -26,6 +27,22 @@ export async function saveFileToLocal(filename: string, uploadFile: any, buff: a
 		return true;
 	} catch (error) {
 		return error;
+	}
+}
+
+//Проверка размера хранилища
+export async function checkSize(folderPath: any) {
+	const fastFolderSizeAsync = promisify(fastFolderSize)
+	const bytes = await fastFolderSizeAsync(folderPath)
+
+	const folderSize = Math.floor(bytes / 1000000);
+	if (folderSize > 10) {
+		console.log('Size limit is exceeded')
+		return false;
+	}
+	else {
+		console.log(`You have ${10 - folderSize}mb for download`);
+		return true;
 	}
 }
 

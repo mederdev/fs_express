@@ -10,18 +10,29 @@ export async function getFileData(req: Request, res: Response, next: NextFunctio
 	try {
 		const { filename } = req.params;
 		await readFile(filename, res);
-		// await adapter.readStream(filename, res)
 	} catch (error) {
 		res.send(error);
 	}
 }
 
-export async function uploadFile(filename: string, file: any) {
+export async function updateFile(req: any, res: Response) {
 	try {
+		console.log(req.file.filename);
+		const result = await setFile(req.file.filename, req.file);
+		console.log(await setNewValue(req.file));
+		res.send(result);
+	}
+	catch (err) {
+		console.error('Error-', err.message);
+		return err.message
+	}
+}
 
-		console.log(filename);
-		const res = await setFile(filename, file);
-		return res;
+export async function uploadFile(req: any, res: Response) {
+	try {
+		const result = await setFile(req.file.filename, req.file);
+		console.log(await setNewValue(req.file));
+		res.send(result)
 	}
 	catch (err) {
 		console.error('Error-', err.message);
@@ -38,23 +49,14 @@ export async function generateBuffer(req: any, res: Response, next: NextFunction
 		});
 		req.on('end', () => {
 			req.file = {
+				filename: filename,
 				data,
 				mimetype: req.headers['content-type'],
 				size: req.headers['content-length']
 			}
-			const metaData = {
-				"filename": filename,
-				"mimetype": req.file.mimetype,
-				"size": req.file.size
-			}
-			setNewValue(metaData);
-			const result = uploadFile(filename, req.file);
-
-
+			next();
 		});
-		res.send('Processing done')
 	}
-	// res.send(req.body);
 	catch (err) {
 		res.send(err.message);
 	}
