@@ -1,6 +1,5 @@
 import { NextFunction, Response, Request } from 'express';
-import { saveFileToLocal } from '../services/storage.service';
-import { readFile, downloadFile, setFile } from '../services/adapter.service';
+import { readFile, setFile } from '../services/adapter.service';
 import { getMeta, setNewValue } from '../services/meta.service';
 const bodyParser = require("body-parser");
 const fs = require("fs");
